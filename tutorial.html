@@ -1,0 +1,154 @@
+<html>
+  <head>
+    <title></title>
+ 
+    <meta content="">
+    <style></style>
+  </head>
+  <body>
+    <script src="./decjs.js"></script>
+    <script>
+      // This library makes heavy use of the new Javascript Proxy feature. Proxy allows one to create an
+      // object that overrides basic operations like 'get' and 'set'. This library uses those features
+      // to create a system for easily creating html elements in a declarative style.
+      //
+      // This library defines an ElementHolderProxy. And it's features are explained below.
+
+      // 'proxy' is a function that wraps an already existing html element into 
+      // a new ElementHolderProxy.
+      let P=decjs.proxy
+
+      // Here a new ElementHolderProxy is created to hold document.body
+      // and stored in 'bodyproxy'
+      let bodyproxy=P(document.body)
+
+      // An ElementHolderProxy can create new elements attached as children to the element it holds.
+      // Here we added a label to document.body
+      // Giving a string as first argument sets the element's 'innerHTML'
+      bodyproxy.label("Label!<br/>")
+      
+      // Since we're using Proxy to turn any use of 'get property' into a ElementHolderProxy holding an 
+      // element of that name, we can create a new element of ANY type, even
+      // ones that aren't defined!
+      bodyproxy.asdf("blah<br/>")
+
+      // While the previous label was added it was also stored in a new ElementHolderProxy and returned, 
+      // so that it can be chained or added to later.
+      // Here we explicity store our new labelproxy
+      let labelproxy=bodyproxy.label("This time we have a reference to the proxy holding the label<br/>");
+
+      // We can also access the underlying element with 'getNode'
+      // We cannot do a normal property access because we overloaded 'get property'
+      // ElementHolderProxy uses a special property called '__Html_ElementHolder_Instance_e__'
+      // That is the only property name that won't return a new html element.
+      let actualLabelElemeent=decjs.getElement(labelproxy)
+
+      // Here 'create' is an empty ElementHolderProxy (with it's element set to null).
+      // 'create' makes it easy to nest several children in the same
+      // element.
+      let c=decjs.create
+      bodyproxy.div(
+        c.label("Child1<br/>"),
+        c.label("Child2<br/>")
+      )
+
+      // It also allows you to make elements that are not yet attached to the DOM.
+      let mycomponent=c.div(
+        c.label,
+        c.input,
+        c.button
+      )
+
+      // You can nest to your heart's content.
+      bodyproxy.div(
+        c.label("This is great!<br/>"),
+        c.label, // You can also create elements without parens
+        c.div.div(
+          c.label
+          ), // and chain them.
+        c.div(
+          c.div(
+            c.button("Click me!"),
+            mycomponent // And you can include already created 'components'
+          ),
+          c.label
+        ),
+        c.label("Yep, sure is!<br/>")
+      ).label("Yep!<br/>")
+
+      // Well, sure it's maybe nice to create all that stuff but now how can you access it?
+      // I created a proxy called 'ElementProxies' for just this purpose.
+      //
+      // Here is a normal object that will store references to elements we've created.
+      let elements={}
+
+      // Here we create a new 'ElementProxies' in 's'.
+      // Whenever a property of 's' is assigned (for example, s.deeplyNestedButton=c.button("Click me!")),
+      // 's' will save the button that was created and store it in 'elements' under the property that was assigned
+      // It also returns an ElementHolderProxy holding that element, which is then returned by the assignment.
+      let s=decjs.ElementProxies(elements)
+
+      // So with deeply nested declarative javascript code,
+      // we can deeply nest things and still conveniently assign their references...
+      bodyproxy.div(
+        c.label("This is great!<br/>"),
+        c.label,
+        c.div.div(
+          c.label
+          ), 
+        c.div(
+          c.div(
+            s.deeplyNestedButton=c.button("This button has a reference!")
+          ),
+          c.label
+        ),
+        c.label("Yep, sure is!<br/>")
+      ).label("Yep!<br/>")
+
+      // ...and access those references in the object we passed as an argument to 'ElementProxies'.
+      // Basically,
+      elements.deeplyNestedButton.onclick=function(){
+        console.log("I can reference nested elements!")
+      }
+
+      // New elements can be initialized by passing in an object that is not a string or an ElementHolderProxy
+      bodyproxy.input({value:"Lots of input"})
+
+      // You can also initialize it by passing it in a function.
+      bodyproxy.button(function(b){
+        b.onclick=function(){
+          console.log("Initialized button clicked! (If you can find it)")
+        }
+      })
+      
+      // You can do this in any combination with ElementHolderProxies, functions, strings, and other objects.
+      // For basic objects, later object properties will overwrite older ones.
+      bodyproxy(
+        c.button(
+          "Strings will append to the current 'innerHTML'<br/>",
+          {class:"clickety",id:"3242343k34jk34"},
+          c.label("blah blah blah"), // this is nested
+          "Again<br/>",
+          {onclick:"console.log('clickety')",class:"clack"},
+          function(b){
+            onclick=function(){ console.log("clackety")} // this overrides the previous 'onclick' setting.
+          }
+        )
+      )
+      
+      // decjs.body is a ElementHolderProxy holding the body element
+      decjs.body(
+        c.div({class:'maindiv'},
+          s.nameInput=c.input({value:"Already there!"}),
+          c.label("Click this button:"),
+          s.doneButton=c.button("Click me")
+        )
+      )
+      elements.doneButton.onclick=function(){
+        decjs.body(c.label(elements.nameInput.value))
+      }
+
+      // There's undoub
+    </script>
+  </body>
+</html>

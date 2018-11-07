@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title></title>
+ 
+    <meta content="">
+    <style></style>
+  </head>
+  <body>
+    <script src="./decjs.js"></script>
+    <script>
+      let c=decjs.create,eles={},s=decjs.ElementProxies(eles)
+
+      decjs.body(
+        c.div({class:'maindiv'},
+          s.nameInput=c.input({value:"Input!"}),
+          c.label("Click this button:"),
+          s.doneButton=c.button("Click me!")
+        )
+      )
+      eles.doneButton.onclick=function(){
+        decjs.body(
+          c.div(
+            c.label("Input was "),c.label(eles.nameInput.value)
+          )
+        )
+      }
+
+      // There's undoub
+    </script>
+  </body>
+</html>
