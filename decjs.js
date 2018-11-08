@@ -17,70 +17,70 @@ FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TOR
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-var decjs=(function(){
-	function newElementHolderProxy(e){
-		return new Proxy(ElementHolder(e),createNewElementHandler)
+var decjs = (function () {
+	function newElementHolderProxy(e) {
+		return new Proxy(ElementHolder(e), createNewElementHandler)
 	}
-	
-	function ElementHolder(e){
-		function __Html_ElementHolder_Instance__(){
-			for(let argument of arguments){
+
+	function ElementHolder(e) {
+		function __Html_ElementHolder_Instance__() {
+			for (let argument of arguments) {
 				// if it proxies the name __Html_ElementHolder_Instance__, it is the html-creator proxy, and not an init function
-				if(typeof(argument)==='function'){
-					if(argument.name==='__Html_ElementHolder_Instance__'){
-						let elementHolderProxy=argument
-						elementHolderProxy.__Html_ElementHolder_Instance_e__=== undefined || 
+				if (typeof (argument) === 'function') {
+					if (argument.name === '__Html_ElementHolder_Instance__') {
+						let elementHolderProxy = argument
+						elementHolderProxy.__Html_ElementHolder_Instance_e__ === undefined ||
 							e.appendChild(getRootElement(elementHolderProxy.__Html_ElementHolder_Instance_e__))
 					}
-					else{
-						let initFunction=argument
+					else {
+						let initFunction = argument
 						initFunction(e)
 					}
 				}
-				else if(typeof(argument)==='object'){ // if not a function, this is an attribute list
-					let attributeList=argument
-					for(let attributeName in attributeList){
-						e.setAttribute(attributeName,attributeList[attributeName])
+				else if (typeof (argument) === 'object') { // if not a function, this is an attribute list
+					let attributeList = argument
+					for (let attributeName in attributeList) {
+						e.setAttribute(attributeName, attributeList[attributeName])
 					}
 				}
-				else if(typeof(argument)==='string'){
-					e.innerHTML+=argument
+				else if (typeof (argument) === 'string') {
+					e.innerHTML += argument
 					//let classname=argument
 					//e.classList.add(classname)
 				}
 			}
-			
+
 			return newElementHolderProxy(e)
 		}
-		__Html_ElementHolder_Instance__.__Html_ElementHolder_Instance_e__=e
-		
+		__Html_ElementHolder_Instance__.__Html_ElementHolder_Instance_e__ = e
+
 		return __Html_ElementHolder_Instance__
 	}
-	
-	function getRootElement(e){
-		while(e.parentElement!==null){
-			e=e.parentElement
+
+	function getRootElement(e) {
+		while (e.parentElement !== null) {
+			e = e.parentElement
 		}
-		
+
 		return e
 	}
-	
-	const createNewElementHandler={
-		get: function(target,property,receiver){
-			if(property in target){
+
+	const createNewElementHandler = {
+		get: function (target, property, receiver) {
+			if (property in target) {
 				return target[property]
-			}else{
-				const newElement=document.createElement(property)
-				
-				if(target.__Html_ElementHolder_Instance_e__!==undefined){
+			} else {
+				const newElement = document.createElement(property)
+
+				if (target.__Html_ElementHolder_Instance_e__ !== undefined) {
 					target.__Html_ElementHolder_Instance_e__.appendChild(getRootElement(newElement))
 				}
-				
+
 				return newElementHolderProxy(newElement)
 			}
-		}	
+		}
 	}
-	
+
 	// whenever the returned object gets a property assigned to an htmlproxy, the _elements argument
 	// will get a property with the same name but assigned to that htmlproxy's underlying html Element
 	// example: 
@@ -89,32 +89,32 @@ var decjs=(function(){
 	// objectContainingElementHolderProxies.mydiv=create.div
 	// console.log(objectContainingHtmlElements.mydiv) // prints out the div that was contained in the 
 	// 												//	corresponding proxy
-	const defaultOptions={autoGenDOMClassnames:false}
-	function ElementProxies(_elements,options){
-		if(!options){
-			options=defaultOptions
+	const defaultOptions = { autoGenDOMClassnames: false }
+	function ElementProxies(_elements, options) {
+		if (!options) {
+			options = defaultOptions
 		}
-		return new Proxy({},{
-			set:function(target, prop, value, receiver){
-				target[prop]=value
-				_elements[prop]=value.__Html_ElementHolder_Instance_e__
-				if(options.autoGenDOMClassnames){
+		return new Proxy({}, {
+			set: function (target, prop, value, receiver) {
+				target[prop] = value
+				_elements[prop] = value.__Html_ElementHolder_Instance_e__
+				if (options.autoGenDOMClassnames) {
 					_elements[prop].classList.add(prop)
 				}
 			}
 		})
 	}
-	
-	function getElement(prox){
+
+	function getElement(prox) {
 		return prox.__Html_ElementHolder_Instance_e__
 	}
-	
-	let decjs={};
-	decjs.proxy=newElementHolderProxy;
-	decjs.body=newElementHolderProxy(document.body);
-	decjs.create=newElementHolderProxy();
-	decjs.getElement=getElement;
-	decjs.ElementProxies=ElementProxies;
+
+	let decjs = {};
+	decjs.proxy = newElementHolderProxy;
+	decjs.body = newElementHolderProxy(document.body);
+	decjs.create = newElementHolderProxy();
+	decjs.getElement = getElement;
+	decjs.ElementProxies = ElementProxies;
 	return decjs;
 }())
 

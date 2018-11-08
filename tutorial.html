@@ -24,7 +24,7 @@
 
       // An ElementHolderProxy can create new elements attached as children to the element it holds.
       // Here we added a label to document.body
-      // Giving a string as first argument sets the element's 'innerHTML'
+      // Giving a string as argument appends to the element's 'innerHTML'
       bodyproxy.label("Label!<br/>")
       
       // Since we're using Proxy to turn any use of 'get property' into a ElementHolderProxy holding an 
@@ -40,10 +40,10 @@
       // We can also access the underlying element with 'getNode'
       // We cannot do a normal property access because we overloaded 'get property'
       // ElementHolderProxy uses a special property called '__Html_ElementHolder_Instance_e__'
-      // That is the only property name that won't return a new html element.
+      // That is the only property name that won't return a new proxy.
       let actualLabelElemeent=decjs.getElement(labelproxy)
 
-      // Here 'create' is an empty ElementHolderProxy (with it's element set to null).
+      // Here 'create' is an empty ElementHolderProxy (with its element set to null).
       // 'create' makes it easy to nest several children in the same
       // element.
       let c=decjs.create
@@ -106,15 +106,14 @@
       ).label("Yep!<br/>")
 
       // ...and access those references in the object we passed as an argument to 'ElementProxies'.
-      // Basically,
       elements.deeplyNestedButton.onclick=function(){
         console.log("I can reference nested elements!")
       }
 
-      // New elements can be initialized by passing in an object that is not a string or an ElementHolderProxy
+      // New elements can be initialized by passing in an object with the desired properties
       bodyproxy.input({value:"Lots of input"})
 
-      // You can also initialize it by passing it in a function.
+      // You can also initialize it by passing in a function.
       bodyproxy.button(function(b){
         b.onclick=function(){
           console.log("Initialized button clicked! (If you can find it)")
@@ -148,7 +147,6 @@
         decjs.body(c.label(elements.nameInput.value))
       }
 
-      // There's undoub
     </script>
   </body>
 </html>
