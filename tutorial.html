@@ -52,6 +52,12 @@
         c.label("Child2<br/>")
       )
 
+      // You can also add children in an array.
+      bodyproxy.div([
+        c.label("Child1InArray<br/>"),
+        c.label("Child2InArray<br/>")
+      ])
+
       // It also allows you to make elements that are not yet attached to the DOM.
       let mycomponent=c.div(
         c.label,

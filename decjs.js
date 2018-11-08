@@ -22,9 +22,10 @@ var decjs = (function () {
         return new Proxy(ElementHolder(e), createNewElementHandler)
     }
 
+
     function ElementHolder(e) {
-        function __Html_ElementHolder_Instance__() {
-            for (let argument of arguments) {
+        function processArguments(args){
+            for (let argument of args) {
                 // if it proxies the name __Html_ElementHolder_Instance__, it is the html-creator proxy, and not an init function
                 if (typeof (argument) === 'function') {
                     if (argument.name === '__Html_ElementHolder_Instance__') {
@@ -36,6 +37,9 @@ var decjs = (function () {
                         let initFunction = argument
                         initFunction(e)
                     }
+                }
+                else if (Array.isArray(argument)){
+                    processArguments(argument)
                 }
                 else if (typeof (argument) === 'object') { // if not a function, this is an attribute list
                     let attributeList = argument
@@ -49,6 +53,10 @@ var decjs = (function () {
                     //e.classList.add(classname)
                 }
             }
+        }
+
+        function __Html_ElementHolder_Instance__() {
+            processArguments(arguments)
 
             return newElementHolderProxy(e)
         }
