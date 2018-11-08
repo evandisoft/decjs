@@ -1,4 +1,4 @@
-This is a library that uses the ES6 (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy "Proxy") feature to easily make UI's in declarative javascript.
+This is a library that uses the ES6 [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy) feature to easily make UI's in declarative javascript.
 
 
 Here is an example:
