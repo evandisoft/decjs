@@ -130,7 +130,7 @@
           "Again<br/>",
           {onclick:"console.log('clickety')",class:"clack"},
           function(b){
-            onclick=function(){ console.log("clackety")} // this overrides the previous 'onclick' setting.
+            b.onclick=function(){ console.log("clackety")} // this overrides the previous 'onclick' setting.
           }
         )
       )
