@@ -19,10 +19,9 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 
 var decjs = (function () {
     function newElementHolderProxy(e) {
-        // if(e===undefined){
-        //     e=document.createDocumentFragment()
-        // } // Using a fragment doesn't appear to make a difference
-        // (Assuming I'm doing it correctly)
+        if(e===undefined){
+            e=document.createDocumentFragment()
+        }
         return new Proxy(ElementHolder(e), createNewElementHandler)
     }
 
