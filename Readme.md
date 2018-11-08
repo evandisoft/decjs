@@ -8,7 +8,7 @@ let c=decjs.create,eles={},s=decjs.ElementProxies(eles)
 
 
 // This creates a div in the body element of class 'maindiv' that has an input, a label, and a button.
-// It saves references for the input and the button. The reference can be retrieved even if the 
+// It saves references for the input and the button. The references can be retrieved even if the 
 // input or the button are arbitrarily nested.
 decjs.body(
     c.div({class:'maindiv'},
@@ -19,7 +19,7 @@ decjs.body(
 )
 
 // The references to the input and the button were copied over to the 'eles' object automatically.
-// 's' is a proxy object that hand's 'set property' calls in a special way.
+// 's' is a proxy object that handl's 'set property' calls in a special way.
 eles.doneButton.onclick=function(){
     decjs.body(
         c.div(
@@ -29,4 +29,4 @@ eles.doneButton.onclick=function(){
 }
 ```
 
-More features and information is in `tutorial.html`. (The tutorial is in comments in the source code. You can run it to verify it what it claims to do.)
+More features and information is in `tutorial.html`. (The tutorial is in comments in the source code. You can run it to verify it works.)
