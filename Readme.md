@@ -19,7 +19,7 @@ decjs.body(
 )
 
 // The references to the input and the button were copied over to the 'eles' object automatically.
-// 's' is a proxy object that handl's 'set property' calls in a special way.
+// 's' is a proxy object that handle's 'set property' calls in a special way.
 eles.doneButton.onclick=function(){
     decjs.body(
         c.div(
@@ -29,4 +29,4 @@ eles.doneButton.onclick=function(){
 }
 ```
 
-More features and information is in `tutorial.html`. (The tutorial is in comments in the source code. You can run it to verify it works.)
+More features and information is in `tutorial.html`. (The tutorial is in the source code. You can run it to verify the examples work.)

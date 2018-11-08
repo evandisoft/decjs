@@ -29,7 +29,7 @@
       
       // Since we're using Proxy to turn any use of 'get property' into a ElementHolderProxy holding an 
       // element of that name, we can create a new element of ANY type, even
-      // ones that aren't defined!
+      // ones that aren't defined! This creates an 'asdf' element.
       bodyproxy.asdf("blah<br/>")
 
       // While the previous label was added it was also stored in a new ElementHolderProxy and returned, 
