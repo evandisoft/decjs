@@ -21,7 +21,7 @@ var decjs = (function () {
     function newElementHolderProxy(e) {
         if(e===undefined){
             e=document.createDocumentFragment()
-        }
+        } // TODO: I dont know exactly how well documentFragments fit in here.
         return new Proxy(ElementHolder(e), createNewElementHandler)
     }
 
@@ -43,6 +43,9 @@ var decjs = (function () {
                 }
                 else if (Array.isArray(argument)){
                     processArguments(argument)
+                }
+                else if (argument instanceof HTMLElement){
+                    e.appendChild(argument)
                 }
                 else if (typeof (argument) === 'object') { // if not a function, this is an attribute list
                     let attributeList = argument
