@@ -181,6 +181,7 @@
         }
       )
 
+      // all the elements created by 'd2' are initialized as specified above
       decjs.body(
         c.div(
           'Borg Panel: ',
@@ -192,9 +193,10 @@
         )
       )
 
+      // You can combine 'override' with 'initList'
       d=decjs.override({
         borgPanel:function(){
-          // You can combine 'override' with 'initList'
+          
           let c=d2
           return c.div.div.div(
               'Borg Panel: ',

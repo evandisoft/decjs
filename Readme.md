@@ -26,4 +26,5 @@ eles.doneButton.onclick=function(){
 More features and information is in `tutorial.html`. (The tutorial is in the source code. You can run it to verify the examples work.)
 
 This is still a work in progress. I'm certain that almost any conceivable feature could be implemented, but I'm
-not yet sure exactly what features are desired in practice, or how they should be structured.
+not yet sure exactly what features are desired in practice, or how they should be structured. I will come back
+to this after I've created a few projects with it.
