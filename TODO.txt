@@ -1,0 +1,3 @@
+Right now I'm not sure exactly what the 'override' and 'initList' functionality should be structured.
+I'll have to come back when I have attempted to build a few projects with this library and adjust things
+accordingly.

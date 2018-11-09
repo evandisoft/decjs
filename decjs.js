@@ -65,7 +65,6 @@ var decjs = (function () {
         return newElementHolderProxy(undefined,overrideProxy)
     }
 
-
     function ElementHolder(e,overrides) {
         function processArguments(args){
             for (let argument of args) {

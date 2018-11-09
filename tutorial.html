@@ -192,28 +192,22 @@
         )
       )
 
-      // You can combine 'override' with 'initList'
-      d2=decjs.initList(['button','label'],
-        function(elem){
-          elem.className+=" borg"
-          elem.innerHTML+='borg'
-          elem.onclick=assimilate
-        }
-      )
-
       d=decjs.override({
         borgPanel:function(){
-          return d2.div.div.div(
+          // You can combine 'override' with 'initList'
+          let c=d2
+          return c.div.div.div(
               'Borg Panel: ',
-              d2.button,
-              d2.button,
-              d2.label,
-              d2.button,
-              d2.button
+              c.button,
+              c.button,
+              c.label,
+              c.button,
+              c.button
           )
         }
       })
 
+      // now 'd' knows how to build a 'borgPanel'
       decjs.body(
         d.borgPanel
       )
