@@ -163,14 +163,15 @@
       })
 
       decjs.body.div({class:'maindiv'},
-          s.nameInput=c.input({value:"Input!"}),
-          d.newdiv.div.newdiv,
-          c.label("Click this button:"),
-          s.doneButton=c.button("Click me!")
+        s.nameInput=c.input({value:"Input!"}),
+        d.newdiv.div.newdiv,
+        c.label("Click this button:"),
+        s.doneButton=c.button("Click me!")
       )
       
       // You can also add an init function for a list of element names
       // (Or all elements if you use 'initAll')
+      // Now any button or label d2 creates will be initialized in the way we specified
       let assimilate=function(){console.log("we will assimilate you")}
       let d2=decjs.initList(['button','label'],
         function(elem){
@@ -182,6 +183,7 @@
 
       decjs.body(
         c.div(
+          'Borg Panel: ',
           d2.button,
           d2.button,
           d2.label,
@@ -200,8 +202,9 @@
       )
 
       d=decjs.override({
-        newdiv:function(){
+        borgPanel:function(){
           return d2.div.div.div(
+              'Borg Panel: ',
               d2.button,
               d2.button,
               d2.label,
@@ -212,7 +215,7 @@
       })
 
       decjs.body(
-        d.newdiv
+        d.borgPanel
       )
 
     </script>
