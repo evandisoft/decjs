@@ -153,6 +153,68 @@
         decjs.body(c.label(elements.nameInput.value))
       }
 
+      // Finally, if you want to define your own 'overrides' that add in custom widgets of your choosing,
+      // 'override' allows you to set a function that will build that widget in place of the default
+      // behavior
+      let d=decjs.override({
+        newdiv:function(){
+          return c.div({class:"newdiv"},"newdiv")
+        }
+      })
+
+      decjs.body.div({class:'maindiv'},
+          s.nameInput=c.input({value:"Input!"}),
+          d.newdiv.div.newdiv,
+          c.label("Click this button:"),
+          s.doneButton=c.button("Click me!")
+      )
+      
+      // You can also add an init function for a list of element names
+      // (Or all elements if you use 'initAll')
+      let assimilate=function(){console.log("we will assimilate you")}
+      let d2=decjs.initList(['button','label'],
+        function(elem){
+          elem.className+=" borg"
+          elem.innerHTML+='borg'
+          elem.onclick=assimilate
+        }
+      )
+
+      decjs.body(
+        c.div(
+          d2.button,
+          d2.button,
+          d2.label,
+          d2.button,
+          d2.button
+        )
+      )
+
+      // You can combine 'override' with 'initList'
+      d2=decjs.initList(['button','label'],
+        function(elem){
+          elem.className+=" borg"
+          elem.innerHTML+='borg'
+          elem.onclick=assimilate
+        }
+      )
+
+      d=decjs.override({
+        newdiv:function(){
+          return d2.div.div.div(
+              d2.button,
+              d2.button,
+              d2.label,
+              d2.button,
+              d2.button
+          )
+        }
+      })
+
+      decjs.body(
+        d.newdiv
+      )
+
     </script>
   </body>
 </html>

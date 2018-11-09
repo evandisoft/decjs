@@ -18,15 +18,55 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 */
 
 var decjs = (function () {
-    function newElementHolderProxy(e) {
+    function newElementHolderProxy(e,overrides) {
         if(e===undefined){
             e=document.createDocumentFragment()
         } // TODO: I dont know exactly how well documentFragments fit in here.
-        return new Proxy(ElementHolder(e), createNewElementHandler)
+        if(overrides===undefined){
+            overrides={}
+        }
+        return new Proxy(ElementHolder(e,overrides), createNewElementHandler)
+    }
+
+    // 'overrides' is a mapping of props to functions that return new widgets.
+    // Each property in 'overrides' overrides the default 'create a new element by property name' behavior
+    // for that property.
+    function override(overrides){
+        return newElementHolderProxy(undefined,overrides)
+    }
+
+    // call 'handler' after creation of any element that is in the list
+    // The handler takes an element as argument.
+    function initList(list,handler){
+        let initSet=new Set(list)
+        let overrideProxy=new Proxy({},{
+                has:function(target,prop){
+                    return initSet.has(prop)
+                },
+                get:function(target,prop){
+                    return newElementHolderProxy()[prop](handler)
+                }
+            }
+        )
+        return newElementHolderProxy(undefined,overrideProxy)
+    }
+
+    // call 'handler' on all elements created by this proxy
+    function initAll(handler){
+        let overrideProxy=new Proxy({},{
+                has:function(target,prop){
+                    return true
+                },
+                get:function(target,prop){
+                    return newElementHolderProxy()[prop](handler)
+                }
+            }
+        )
+        return newElementHolderProxy(undefined,overrideProxy)
     }
 
 
-    function ElementHolder(e) {
+    function ElementHolder(e,overrides) {
         function processArguments(args){
             for (let argument of args) {
                 // if it proxies the name __Html_ElementHolder_Instance__, it is the html-creator proxy, and not an init function
@@ -50,7 +90,13 @@ var decjs = (function () {
                 else if (typeof (argument) === 'object') { // if not a function, this is an attribute list
                     let attributeList = argument
                     for (let attributeName in attributeList) {
-                        e.setAttribute(attributeName, attributeList[attributeName])
+                        // let currentVal=e.getAttribute(attributeName)
+                        // let newVal=attributeList[attributeName]
+                        // if(currentVal!=null){
+                        //     newVal=currentVal+" "+newVal
+                        // }
+                        // e.setAttribute(attributeName, newVal)
+                        e.setAttribute(attributeName,attributeList[attributeName])
                     }
                 }
                 else if (typeof (argument) === 'string') {
@@ -63,10 +109,11 @@ var decjs = (function () {
 
         function __Html_ElementHolder_Instance__() {
             processArguments(arguments)
-
+            
             return newElementHolderProxy(e)
         }
         __Html_ElementHolder_Instance__.__Html_ElementHolder_Instance_e__ = e
+        __Html_ElementHolder_Instance__.__Html_ElementHolder_Instance_overrides__=overrides
 
         return __Html_ElementHolder_Instance__
     }
@@ -80,18 +127,24 @@ var decjs = (function () {
     }
 
     const createNewElementHandler = {
-        get: function (target, property, receiver) {
+        get: function (target, property) {
             if (property in target) {
                 return target[property]
+            } 
+            
+            let newElement
+
+            if(property in target.__Html_ElementHolder_Instance_overrides__){
+                newElement=target.__Html_ElementHolder_Instance_overrides__[property]().__Html_ElementHolder_Instance_e__
             } else {
-                const newElement = document.createElement(property)
-
-                if (target.__Html_ElementHolder_Instance_e__ !== undefined) {
-                    target.__Html_ElementHolder_Instance_e__.appendChild(getRootElement(newElement))
-                }
-
-                return newElementHolderProxy(newElement)
+                newElement = document.createElement(property)
             }
+
+            if (target.__Html_ElementHolder_Instance_e__ !== undefined) {
+                target.__Html_ElementHolder_Instance_e__.appendChild(getRootElement(newElement))
+            }
+
+            return newElementHolderProxy(newElement,target.__Html_ElementHolder_Instance_overrides__)
         }
     }
 
@@ -109,7 +162,7 @@ var decjs = (function () {
             options = defaultOptions
         }
         return new Proxy({}, {
-            set: function (target, prop, value, receiver) {
+            set: function (target, prop, value) {
                 target[prop] = value
                 _elements[prop] = value.__Html_ElementHolder_Instance_e__
                 if (options.autoGenDOMClassnames) {
@@ -123,13 +176,17 @@ var decjs = (function () {
         return prox.__Html_ElementHolder_Instance_e__
     }
 
-    let decjs = {};
-    decjs.proxy = newElementHolderProxy;
-    decjs.body = newElementHolderProxy(document.body);
-    decjs.create = newElementHolderProxy();
-    decjs.getElement = getElement;
-    decjs.ElementProxies = ElementProxies;
-    return decjs;
+    let decjs = {}
+    decjs.proxy = newElementHolderProxy
+    decjs.body = newElementHolderProxy(document.body)
+    decjs.create = newElementHolderProxy()
+    decjs.newElementHolderProxy=newElementHolderProxy
+    decjs.getElement = getElement
+    decjs.ElementProxies = ElementProxies
+    decjs.override=override
+    decjs.initList=initList
+    decjs.initAll=initAll
+    return decjs
 }())
 
 /*//module.exports=
