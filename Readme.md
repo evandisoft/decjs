@@ -17,8 +17,8 @@ decjs.body.div({class:'maindiv'},
 )
 
 // The references to the input and the button were copied over to the 'elements' object automatically.
-// 'proxies' is a proxy object that is used store ElementProxies by name, as well as copy those references into an object
-// holding elements by the same name. (So they can be accessed later)
+// 'proxies' is a proxy object that is used to store ElementProxies by name, as well as copy those 
+// references into an object holding elements by the same name. (So they can be accessed later)
 elements.doneButton.onclick=function(){
     decjs.body.div(c.label("Input was "),c.label(elements.nameInput.value))
 }
